@@ -1,13 +1,8 @@
 #include QMK_KEYBOARD_H
 
 enum alt_keycodes {
-    U_T_AUTO = SAFE_RANGE, //USB Extra Port Toggle Auto Detect / Always Active
-    U_T_AGCR,              //USB Toggle Automatic GCR control
-    DBG_TOG,               //DEBUG Toggle On / Off
-    DBG_MTRX,              //DEBUG Toggle Matrix Prints
-    DBG_KBD,               //DEBUG Toggle Keyboard Prints
-    DBG_MOU,               //DEBUG Toggle Mouse Prints
-    MD_BOOT,               //Restart into bootloader after hold timeout
+    MD_BOOT = SAFE_RANGE,   //Restart into bootloader after hold timeout
+    RGB_DEF,                //Set RGB mode to the default/startup
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -20,10 +15,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [1] = LAYOUT_65_ansi_blocker(
         KC_TILD, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, KC_MUTE, \
-        _______, RGB_SPD, RGB_VAI, RGB_SPI, RGB_HUI, RGB_SAI, _______, _______, KC_PSCR, KC_SLCK, KC_PAUS, _______, _______, _______, KC_MSTP, \
-        _______, RGB_RMOD,RGB_VAD, RGB_MOD, RGB_HUD, RGB_SAD, _______, _______, _______, _______, _______, _______,         A(KC_ENT),KC_VOLU, \
-        _______, RGB_TOG,A(KC_F4), _______, _______, MD_BOOT, NK_TOGG, DBG_TOG, _______, _______, _______, _______,          KC_APP,  KC_VOLD, \
-        _______, _______, _______,                            KC_MPLY,                            _______, _______, KC_MPRV, KC_LOCK, KC_MNXT  \
+        RGB_DEF, RGB_SPD, RGB_VAI, RGB_SPI, RGB_HUI, RGB_SAI, _______, _______, KC_PSCR, KC_SLCK, KC_PAUS, _______, _______, _______, KC_MSTP, \
+        _______, RGB_RMOD,RGB_VAD, RGB_MOD, RGB_HUD, RGB_SAD, _______, _______, _______, _______, _______, _______,         A(KC_ENT),KC_MPRV, \
+        _______, RGB_TOG,A(KC_F4), _______, _______, MD_BOOT, NK_TOGG, _______, _______, _______, _______, _______,          KC_APP,  KC_MNXT, \
+        _______, _______, _______,                            KC_MPLY,                            _______, _______, KC_HOME, KC_LOCK, KC_END  \
     ),
     /*
     [X] = LAYOUT(
@@ -44,36 +39,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     static uint32_t key_timer;
 
     switch (keycode) {
-        case U_T_AUTO:
-            if (record->event.pressed && MODS_SHIFT && MODS_CTRL) {
-                TOGGLE_FLAG_AND_PRINT(usb_extra_manual, "USB extra port manual mode");
-            }
-            return false;
-        case U_T_AGCR:
-            if (record->event.pressed && MODS_SHIFT && MODS_CTRL) {
-                TOGGLE_FLAG_AND_PRINT(usb_gcr_auto, "USB GCR auto mode");
-            }
-            return false;
-        case DBG_TOG:
-            if (record->event.pressed) {
-                TOGGLE_FLAG_AND_PRINT(debug_enable, "Debug mode");
-            }
-            return false;
-        case DBG_MTRX:
-            if (record->event.pressed) {
-                TOGGLE_FLAG_AND_PRINT(debug_matrix, "Debug matrix");
-            }
-            return false;
-        case DBG_KBD:
-            if (record->event.pressed) {
-                TOGGLE_FLAG_AND_PRINT(debug_keyboard, "Debug keyboard");
-            }
-            return false;
-        case DBG_MOU:
-            if (record->event.pressed) {
-                TOGGLE_FLAG_AND_PRINT(debug_mouse, "Debug mouse");
-            }
-            return false;
         case MD_BOOT:
             if (record->event.pressed) {
                 key_timer = timer_read32();
@@ -82,6 +47,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     reset_keyboard();
                 }
             }
+            return false;
+        case RGB_DEF:
+            rgb_matrix_mode(RGB_MATRIX_STARTUP_MODE);
             return false;
         case RGB_TOG:
             if (record->event.pressed) {

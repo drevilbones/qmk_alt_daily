@@ -20,17 +20,13 @@
 // Step 1.
 // Declare custom effects using the RGB_MATRIX_EFFECT macro
 // (note the lack of semicolon after the macro!)
-RGB_MATRIX_EFFECT(hid_effect)
+RGB_MATRIX_EFFECT(CYCLE_DOWN_UP)
 
 // Step 2.
 // Define effects inside the `RGB_MATRIX_CUSTOM_EFFECT_IMPLS` ifdef block
 #ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
 
 RGB rgb_matrix_led_state[DRIVER_LED_TOTAL];
-
-// e.g: A simple effect, self-contained within a single method
-RGB_MATRIX_EFFECT(CYCLE_DOWN_UP)
-#ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
 
 static HSV CYCLE_DOWN_UP_math(HSV hsv,  uint8_t i, uint8_t time) {
     hsv.h = g_led_config.point[i].y + time;
