@@ -1,5 +1,9 @@
 #include QMK_KEYBOARD_H
 
+void keyboard_post_init_user(void) {
+    usb_extra_manual = 1; //turn on second usb port
+}
+
 enum alt_keycodes {
     MD_BOOT = SAFE_RANGE,   //Restart into bootloader after hold timeout
     RGB_DEF,                //Set RGB mode to the default/startup
@@ -48,8 +52,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             return false;
-        case RGB_DEF:
+        case RGB_DEF: //reset RBG settings to startup
             rgb_matrix_mode(RGB_MATRIX_STARTUP_MODE);
+            rgb_matrix_set_speed(RGB_MATRIX_STARTUP_SPD);
             return false;
         case RGB_TOG:
             if (record->event.pressed) {
