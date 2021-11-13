@@ -11,7 +11,7 @@ enum alt_keycodes {
     L_PSI,              //LED Pattern Speed Increase
     L_PSD,              //LED Pattern Speed Decrease
     L_T_MD,             //LED Toggle Mode
-    RGB_TOG,            //LED Toggle On / Off
+    L_ONOFF,            //LED Toggle On / Off
     L_ON,               //LED On
     L_OFF,              //LED Off
     L_T_BR,             //LED Toggle Breath Effect
@@ -42,7 +42,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TILD, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, KC_MUTE, \
         RGB_DEF, L_PSD,   L_BRI,   L_PSI,   L_EDG_I, L_T_PTD, _______, _______, KC_PSCR, KC_SLCK, KC_PAUS, _______, _______, _______, KC_MSTP, \
         _______, L_PTP,   L_BRD,   L_PTN,   L_EDG_D, _______, _______, _______, _______, _______, _______, _______,         A(KC_ENT),KC_MPRV, \
-        _______, RGB_TOG,A(KC_F4), L_T_MD,  _______, MD_BOOT, _______, _______, _______, _______, _______, _______,          KC_APP,  KC_MNXT, \
+        _______, L_ONOFF,A(KC_F4), L_T_MD,  _______, MD_BOOT, _______, _______, _______, _______, _______, _______,          KC_APP,  KC_MNXT, \
         _______, _______, _______,                            KC_MPLY,                            _______, _______, KC_HOME, KC_LOCK, KC_END  \
     ),
     /*
@@ -57,19 +57,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 void set_rgb_default(void) {
-    led_animation_id = 0; //scrolling gradient
-    led_edge_brightness -= 0.1;  //turn the underglow down a notch
+    led_animation_speed = 0.1; //slow, subtle
+    led_edge_brightness = 0.4;  //turn the underglow down a bit
     led_animation_direction = 0;  //scroll bottom to top
     led_animation_orientation = 1;
     led_animation_circular = 0;    
 }
 
-void keyboard_post_init_user(void) {
-    set_rgb_default();
-}
-
 // Runs just one time when the keyboard initializes.
 void matrix_init_user(void) {
+    set_rgb_default();    
 };
 
 // Runs constantly in the background, in a loop.
@@ -148,7 +145,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 if (led_lighting_mode > LED_MODE_MAX_INDEX) led_lighting_mode = LED_MODE_NORMAL;
             }
             return false;
-        case RGB_TOG:
+        case L_ONOFF:
             if (record->event.pressed) {
                 I2C3733_Control_Set(!I2C3733_Control_Get());
             }
@@ -244,7 +241,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 key_timer = timer_read32();
             } else {
-                if (timer_elapsed32(key_timer) >= BOOTKEY_HOLD_MS) {
+                if (timer_elapsed32(key_timer) >= 500) {
                     reset_keyboard();
                 }
             }
