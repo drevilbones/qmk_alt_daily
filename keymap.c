@@ -41,7 +41,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [1] = LAYOUT_65_ansi_blocker(
         KC_TILD, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, KC_MUTE, \
         RGB_DEF, L_PSD,   L_BRI,   L_PSI,   L_EDG_I, L_T_PTD, _______, _______, KC_PSCR, KC_SLCK, KC_PAUS, _______, _______, _______, KC_MSTP, \
-        _______, L_PTP,   L_BRD,   L_PTN,   L_EDG_D, _______, _______, _______, _______, _______, _______, _______,         A(KC_ENT),KC_MPRV, \
+        _______, _______, L_BRD,   _______, L_EDG_D, _______, _______, _______, _______, _______, _______, _______,         A(KC_ENT),KC_MPRV, \
         _______, L_ONOFF,A(KC_F4), L_T_MD,  _______, MD_BOOT, _______, _______, _______, _______, _______, _______,          KC_APP,  KC_MNXT, \
         _______, _______, _______,                            KC_MPLY,                            _______, _______, KC_HOME, KC_LOCK, KC_END  \
     ),
@@ -57,8 +57,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 void set_rgb_default(void) {
-    led_animation_speed = 0.1; //slow, subtle
-    led_edge_brightness = 0.4;  //turn the underglow down a bit
+    led_animation_speed = 1; //slow, subtle
+    led_edge_brightness = 0.2;  //turn the underglow down a bunch
     led_animation_direction = 0;  //scroll bottom to top
     led_animation_orientation = 1;
     led_animation_circular = 0;    
@@ -241,7 +241,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 key_timer = timer_read32();
             } else {
-                if (timer_elapsed32(key_timer) >= 500) {
+                if (timer_elapsed32(key_timer) >= 3000) {
                     reset_keyboard();
                 }
             }
