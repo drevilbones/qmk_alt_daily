@@ -1,12 +1,23 @@
 #include QMK_KEYBOARD_H
 
-void keyboard_post_init_user(void) {
+led_flags_t current_flags;
+
+void set_rgb_default(void) {
+    rgb_matrix_mode(RGB_MATRIX_STARTUP_MODE);
+    rgb_matrix_set_speed(RGB_MATRIX_STARTUP_SPD);
+    //decrease underglow brightness
+}
+
+void keyboard_post_init_user() {
     usb_extra_manual = 1; //turn on second usb port
+    set_rgb_default();
 }
 
 enum alt_keycodes {
     MD_BOOT = SAFE_RANGE,   //Restart into bootloader after hold timeout
     RGB_DEF,                //Set RGB mode to the default/startup
+    UNG_BRI,                //increase underglow brightness
+    UNG_BRD                 //decrease underglow brightness
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -19,9 +30,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [1] = LAYOUT_65_ansi_blocker(
         KC_TILD, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, KC_MUTE, \
-        RGB_DEF, RGB_SPD, RGB_VAI, RGB_SPI, RGB_HUI, RGB_SAI, _______, _______, KC_PSCR, KC_SLCK, KC_PAUS, _______, _______, _______, KC_MSTP, \
-        _______, RGB_RMOD,RGB_VAD, RGB_MOD, RGB_HUD, RGB_SAD, _______, _______, _______, _______, _______, _______,         A(KC_ENT),KC_MPRV, \
-        _______, RGB_TOG,A(KC_F4), _______, _______, MD_BOOT, NK_TOGG, _______, _______, _______, _______, _______,          KC_APP,  KC_MNXT, \
+        RGB_DEF, RGB_SPD, RGB_VAI, RGB_SPI, RGB_HUI, RGB_SAI, UNG_BRI, _______, KC_PSCR, KC_SLCK, KC_PAUS, _______, _______, _______, KC_MSTP, \
+        _______, RGB_RMOD,RGB_VAD, RGB_MOD, RGB_HUD, RGB_SAD, UNG_BRD, _______, _______, _______, _______, _______,         A(KC_ENT),KC_VOLU, \
+        _______, RGB_TOG,A(KC_F4), _______, _______, MD_BOOT, NK_TOGG, _______, KC_MPRV, KC_MNXT, _______, _______,          KC_APP,  KC_VOLD, \
         _______, _______, _______,                            KC_MPLY,                            _______, _______, KC_HOME, KC_LOCK, KC_END  \
     ),
     /*
@@ -47,15 +58,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 key_timer = timer_read32();
             } else {
-                if (timer_elapsed32(key_timer) >= 500) {
+                if (timer_elapsed32(key_timer) >= 2000) {
                     reset_keyboard();
                 }
             }
             return false;
         case RGB_DEF: //reset RBG settings to startup
-            rgb_matrix_mode(RGB_MATRIX_STARTUP_MODE);
-            rgb_matrix_set_speed(RGB_MATRIX_STARTUP_SPD);
+            set_rgb_default();
             return false;
+        case UNG_BRI:
+            rgblight_increase_val();
+            return false;
+        case UNG_BRD:
+            rgblight_decrease_val();
+            return false;            
         case RGB_TOG:
             if (record->event.pressed) {
               switch (rgb_matrix_get_flags()) {
