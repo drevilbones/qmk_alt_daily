@@ -9,8 +9,6 @@ RGB_MATRIX_EFFECT(CYCLE_ROWS_ALT)
 // Define effects inside the `RGB_MATRIX_CUSTOM_EFFECT_IMPLS` ifdef block
 #ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
 
-RGB rgb_matrix_led_state[DRIVER_LED_TOTAL];
-
 static HSV CYCLE_ROWS_ALT_math(HSV hsv,  uint8_t i, uint8_t time) {
     hsv.h = g_led_config.point[i].y - time;
     return hsv;
