@@ -10,7 +10,7 @@
 #define RGB_MATRIX_SPD_STEP 8
 
 //RGB mode for startup and for RGB_DEF keycode
-#define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_CYCLE_UP_DOWN
+//#define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_CYCLE_UP_DOWN
 //#define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_CUSTOM_CYCLE_ROWS_ALT
 
 //hit both shift keys to turn on caps for one word (until space is hit)

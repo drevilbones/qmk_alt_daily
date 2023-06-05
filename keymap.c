@@ -7,9 +7,7 @@ void keyboard_post_init_user() {
 }
 
 enum alt_keycodes {
-    MD_BOOT = SAFE_RANGE,   //Restart into bootloader after hold timeout
-    UND_VAI,                //increase underglow brightness
-    UND_VAD                 //decrease underglow brightness
+    MD_BOOT = SAFE_RANGE   //Restart into bootloader after hold timeout
 };
 
 //TODO: fix underglow control
@@ -24,8 +22,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [1] = LAYOUT_65_ansi_blocker(
         KC_GRV,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, KC_MUTE, \
-        _______, RGB_SPD, RGB_VAI, RGB_SPI, UND_VAI, _______, _______, _______, KC_PSCR, KC_SCRL, KC_PAUS, _______, _______, _______, DM_REC1, \
-        _______, RGB_RMOD,RGB_VAD, RGB_MOD, UND_VAD, _______, _______, _______, _______, _______, _______, _______,         A(KC_ENT),KC_VOLU, \
+        _______, RGB_SPD, RGB_VAI, RGB_SPI, RGB_HUI, _______, _______, _______, KC_PSCR, KC_SCRL, KC_PAUS, _______, _______, _______, DM_REC1, \
+        _______, RGB_RMOD,RGB_VAD, RGB_MOD, RGB_HUD, _______, _______, _______, _______, _______, _______, _______,         A(KC_ENT),KC_VOLU, \
         _______, RGB_TOG,A(KC_F4), _______, _______, MD_BOOT, _______, _______, KC_MPRV, KC_MNXT, _______, _______,          KC_APP,  KC_VOLD, \
         _______, _______, _______,                            KC_MPLY,                            _______, _______, KC_HOME, QK_LOCK, KC_END  \
     ),
@@ -56,14 +54,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     reset_keyboard();
                 }
             }
-            return false;
-        case UND_VAI:
-            rgb_matrix_set_flags(LED_FLAG_UNDERGLOW);
-            rgb_matrix_increase_val();
-            return false;
-        case UND_VAD:
-            rgb_matrix_set_flags(LED_FLAG_UNDERGLOW);
-            rgb_matrix_decrease_val();
             return false;
         case RGB_TOG:
             if (record->event.pressed) {
